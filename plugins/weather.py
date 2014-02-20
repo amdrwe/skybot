@@ -5,18 +5,37 @@ from util import hook, http
 
 @hook.api_key('wunderground')
 @hook.command(autohelp=False)
+<<<<<<< HEAD
 def weather(inp, nick='', server='', reply=None, db=None, api_key=None):
     ".weather <location> [dontsave] -- gets weather data from Wunderground "\
+=======
+def weather(inp, chan='', nick='', reply=None, db=None, api_key=None):
+    ".weather <location> [dontsave] | @<nick> -- gets weather data from Wunderground "\
+>>>>>>> upstream/master
             "http://wunderground.com/weather/api"
 
     if not api_key:
         return None
 
+<<<<<<< HEAD
     loc = inp
+=======
+    # this database is used by other plugins interested in user's locations,
+    # like .near in tag.py
+    db.execute(
+        "create table if not exists location(chan, nick, loc, lat, lon, primary key(chan, nick))")
 
-    dontsave = loc.endswith(" dontsave")
-    if dontsave:
-        loc = loc[:-9].strip().lower()
+    if inp[0:1] == '@':
+        nick = inp[1:].strip()
+        loc = None
+        dontsave = True
+    else:
+        loc = inp
+>>>>>>> upstream/master
+
+        dontsave = loc.endswith(" dontsave")
+        if dontsave:
+            loc = loc[:-9].strip().lower()
 
     db.execute("create table if not exists weather(nick primary key, loc)")
 
