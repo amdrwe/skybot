@@ -5,41 +5,22 @@ from util import hook, http
 
 @hook.api_key('wunderground')
 @hook.command(autohelp=False)
-<<<<<<< HEAD
 def weather(inp, nick='', server='', reply=None, db=None, api_key=None):
     ".weather <location> [dontsave] -- gets weather data from Wunderground "\
-=======
-def weather(inp, chan='', nick='', reply=None, db=None, api_key=None):
-    ".weather <location> [dontsave] | @<nick> -- gets weather data from Wunderground "\
->>>>>>> upstream/master
             "http://wunderground.com/weather/api"
 
     if not api_key:
         return None
 
-<<<<<<< HEAD
     loc = inp
-=======
-    # this database is used by other plugins interested in user's locations,
-    # like .near in tag.py
-    db.execute(
-        "create table if not exists location(chan, nick, loc, lat, lon, primary key(chan, nick))")
 
-    if inp[0:1] == '@':
-        nick = inp[1:].strip()
-        loc = None
-        dontsave = True
-    else:
-        loc = inp
->>>>>>> upstream/master
-
-        dontsave = loc.endswith(" dontsave")
-        if dontsave:
-            loc = loc[:-9].strip().lower()
+    dontsave = loc.endswith(" dontsave")
+    if dontsave:
+        loc = loc[:-9].strip().lower()
 
     db.execute("create table if not exists weather(nick primary key, loc)")
 
-    if not loc: # blank line
+    if not loc:  # blank line
         loc = db.execute("select loc from weather where nick=lower(?)",
                             (nick,)).fetchone()
         if not loc:
@@ -77,7 +58,7 @@ def weather(inp, chan='', nick='', reply=None, db=None, api_key=None):
 
     info = {}
     if 'current_observation' not in parsed_json:
-        resp = 'Could not find weather for {inp} {state} {loc}. '.format(inp=inp, state=state, loc=loc)
+        resp = 'Could not find weather for {inp}. '.format(inp=inp)
 
         # In the case of no observation, but results, print some possible
         # location matches
